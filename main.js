@@ -6,7 +6,7 @@ var WebSocket = require("ws");
 var http_port = process.env.HTTP_PORT || 3001;
 var p2p_port = process.env.P2P_PORT || 6001;
 var initialPeers = process.env.PEERS ? process.env.PEERS.split(",") : [];
-var difficulty = 16;
+var difficulty = 5;
 
 class Block {
   constructor(index, previousHash, timestamp, data, hash, difficulty, nonce) {
@@ -250,13 +250,21 @@ var write = (ws, message) => ws.send(JSON.stringify(message));
 var broadcast = (message) =>
   sockets.forEach((socket) => write(socket, message));
 
-var isEleven = (str) => {
+var isFibonacci = (str) => {
   var sum = 0;
-  for (var i = 0; i < difficulty; i++) {
-    sum += parseInt(str[i], 16);
+  var firstDigit;
+  var secondDigit;
+  var thirdDigit;
+
+  for (var i = 2; i < difficulty; i++) {
+    firstDigit = parseInt(str[i - 2], 16);
+    secondDigit = parseInt(str[i - 1], 16);
+    thirdDigit = parseInt(str[i], 16);
+
+    if (firstDigit + secondDigit !== thirdDigit) return false;
   }
 
-  return sum / difficulty === 11;
+  return true;
 };
 
 var mineBlock = (blockData) => {
@@ -272,7 +280,7 @@ var mineBlock = (blockData) => {
     nonce
   );
 
-  while (!isEleven(nextHash.substring(0, difficulty))) {
+  while (!isFibonacci(nextHash.substring(0, difficulty))) {
     nonce++;
     nextTimestamp = new Date().getTime() / 1000;
     nextHash = calculateHash(
@@ -303,5 +311,5 @@ connectToPeers(initialPeers);
 initHttpServer();
 initP2PServer();
 
-//$env:HTTP_PORT=3002; $env:P2P_PORT=6002; $env:PEERS="ws://192.168.0.145:6001"; npm start
+//$env:HTTP_PORT=3002; $env:P2P_PORT=6002; $env:PEERS="ws://192.168.34.170:6001"; npm start
 //$env:HTTP_PORT=3001; $env:P2P_PORT=6001; npm start

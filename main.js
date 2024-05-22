@@ -251,7 +251,6 @@ var broadcast = (message) =>
   sockets.forEach((socket) => write(socket, message));
 
 var isFibonacci = (str) => {
-  var sum = 0;
   var firstDigit;
   var secondDigit;
   var thirdDigit;
@@ -292,7 +291,13 @@ var mineBlock = (blockData) => {
     );
 
     console.log(
-      `index: ${nextIndex}, previousHash: ${previousBlock.hash}, timestamp: ${nextTimestamp}, data: ${blockData}, hash: ${nextHash}, difficulty: ${difficulty}, nonce: ${nonce}`
+      `index: ${nextIndex}, 
+      previousHash: ${previousBlock.hash}, 
+      timestamp: ${nextTimestamp}, 
+      data: ${blockData}, 
+      hash: ${nextHash}, 
+      difficulty: ${difficulty}, 
+      nonce: ${nonce}`
     );
   }
 
